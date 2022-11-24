@@ -29,7 +29,7 @@ export async function discord(request: Request) {
 
   // Slash commands
   if (type === 2) {
-    const { value } = data.options.find((option) => option.name === "name");
+    // const { value } = data.options.find((option) => option.name === "name");
     // switch (data.data.name) {
     switch (data.name) {
       case "hello":
