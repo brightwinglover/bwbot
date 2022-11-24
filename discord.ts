@@ -57,7 +57,7 @@ function verifySignature(
   const timestamp = request.headers.get("X-Signature-Timestamp")!;
   // const body = await request.text();
   const valid = nacl.sign.detached.verify(
-    new TextEncoder().encode(timestamp + body),
+    new TextEncoder().encode(timestamp + JSON.stringify(body)),
     hexToUint8Array(signature),
     hexToUint8Array(PUBLIC_KEY),
   );
