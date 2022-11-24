@@ -58,7 +58,7 @@ async function verifySignature(
   const timestamp = request.headers.get("X-Signature-Timestamp")!;
   let intermediary = await request.json();
   console.log("Intermediary:", intermediary);
-  const body = intermediary.JSON.stringify(data);
+  const body = JSON.stringify(intermediary);
   console.info("Initial body:", body);
   // const body = JSON.stringify(data);
   const valid = nacl.sign.detached.verify(
