@@ -42,7 +42,7 @@ async function assertRequestCompliant(
   });
   const valid = verifySignature(request, body);
   console.log(error, valid);
-  if (error || !valid) false;
+  if (error || !valid) return false;
   return true;
 }
 
