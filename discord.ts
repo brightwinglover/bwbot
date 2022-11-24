@@ -16,6 +16,8 @@ export async function discord(request: Request) {
   if (error) {
     return json({ error: "Invalid request." }, { status: 401 });
   }
+  const d = await request.json();
+  console.log("d", d);
   const { valid, body } = await verifySignature(request);
   if (!valid) {
     return json({ error: "Invalid request" }, { status: 401 });
@@ -47,14 +49,16 @@ export async function discord(request: Request) {
 /** Verify whether the request is coming from Discord. */
 async function verifySignature(
   request: Request,
+  data = {},
 ): Promise<{ valid: boolean; body: string }> {
   const PUBLIC_KEY = Deno.env.get("DISCORD_PUBLIC_KEY")!;
   // Discord sends these headers with every request.
   const signature = request.headers.get("X-Signature-Ed25519")!;
   const timestamp = request.headers.get("X-Signature-Timestamp")!;
-  const body = await request.text();
+  // const body = await request.text();
+  const body = JSON.stringify(data);
   const valid = nacl.sign.detached.verify(
-    new TextEncoder().encode(timestamp + body),
+    new TextEncoder().encode(timestamp + JSON.stringify(data)),
     hexToUint8Array(signature),
     hexToUint8Array(PUBLIC_KEY),
   );
