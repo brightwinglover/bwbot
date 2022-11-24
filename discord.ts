@@ -15,7 +15,7 @@ export async function discord(request: Request): Promise<Response> {
   }
 
   // Discord ping
-  if (data.type === 1) json({ type: 1 });
+  if (data.type === 1) return json({ type: 1 });
 
   // Slash commands
   if (data.type === 2) {
