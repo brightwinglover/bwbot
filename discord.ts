@@ -41,6 +41,7 @@ async function assertRequestCompliant(
     },
   });
   const valid = verifySignature(request, body);
+  console.log(error, valid);
   if (error || !valid) false;
   return true;
 }
@@ -62,7 +63,6 @@ function verifySignature(
     // Buffer.from(signature, "hex"),
     // Buffer.from(PUBLIC_KEY, "hex"),
   );
-  console.log(valid);
   return valid;
 }
 
