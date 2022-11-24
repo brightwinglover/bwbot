@@ -56,13 +56,13 @@ async function verifySignature(
   // Discord sends these headers with every request.
   const signature = request.headers.get("X-Signature-Ed25519")!;
   const timestamp = request.headers.get("X-Signature-Timestamp")!;
-  let intermediary = await request.json();
-  console.log("Intermediary:", intermediary);
-  const body = JSON.stringify(intermediary);
-  console.info("Initial body:", body);
-  // const body = JSON.stringify(data);
+  // let intermediary = await request.json();
+  // console.log("Intermediary:", intermediary);
+  // const body = JSON.stringify(intermediary);
+  // console.info("Initial body:", body);
+  const body = data;
   const valid = nacl.sign.detached.verify(
-    new TextEncoder().encode(timestamp + body),
+    new TextEncoder().encode(timestamp + JSON.stringify(data)),
     // new TextEncoder().encode(timestamp + JSON.stringify(data)),
     hexToUint8Array(signature),
     hexToUint8Array(PUBLIC_KEY),
