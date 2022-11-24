@@ -7,19 +7,24 @@ import nacl from "https://cdn.skypack.dev/tweetnacl@v1.0.3?dts";
 
 export async function discord(request: Request) {
   // Grab data from request
-  const body = await request.json();
+  const data = await request.json();
   const { error } = await validateRequest(request, {
     POST: {
       headers: ["X-Signature-Ed25519", "X-Signature-Timestamp"],
     },
   });
-  const valid = await verifySignature(request, body);
-  console.log("body", body);
+  const valid = await verifySignature(request, data);
+  console.log("data", data);
+  console.log("valid", valid);
+  console.log("valid", valid);
   if (error || !valid) {
     return json({ error: "Invalid request." }, { status: 401 });
   }
-  const { type = 0, data } = body;
-  console.log("data", data);
+  // if (!valid) {
+  //   return json({ error: "Invalid request" }, { status: 401 });
+  // }
+  const { type = 0, input = data } = data;
+  console.log("input", input);
   console.log("type", type);
   // const input = data?.data;
   // const type = data?.type;
@@ -30,7 +35,7 @@ export async function discord(request: Request) {
   if (type === 2) {
     // Determine which command by name
     // const { value } = data.options.find((option) => option.name === "name");
-    switch (data.name) {
+    switch (input.name) {
       case "hello":
         return json({ type: 4, data: { content: "Hello!" } });
       case "cutie": {
