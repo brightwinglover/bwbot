@@ -29,17 +29,18 @@ export async function discord(request: Request) {
   // Slash commands
   if (type === 2) {
     const { value } = data.options.find((option) => option.name === "name");
-    return json({
-      // Type 4 means to retain user input
-      type: 4,
-      data: {
-        content: `Hello, ${value || "AYAYA"}!`,
-      },
-    });
+    // switch (data.data.name) {
+    switch (data.data.name) {
+      case "hello":
+        return json({ type: 4, data: { content: "Hello!" } });
+      case "cutie": {
+        return json({ type: 4, data: { content: getCutie() } });
+      }
+    }
   }
 
   // Should be unreachable
-  return json({ error: "bad request" }, { status: 400 });
+  return json({ error: "Bad request." }, { status: 400 });
 }
 
 /** Verify whether the request is coming from Discord. */
@@ -62,4 +63,10 @@ async function verifySignature(
 /** Converts a hexadecimal string to Uint8Array. */
 function hexToUint8Array(hex: string) {
   return new Uint8Array(hex.match(/.{1,2}/g)!.map((val) => parseInt(val, 16)));
+}
+
+function getCutie(): string {
+  const url =
+    "https://safebooru.org//images/4020/6b6a59a1b454b7571bc9a570becb37acd6c7758d.png?4200107";
+  return url;
 }
