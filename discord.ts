@@ -19,7 +19,7 @@ export async function discord(request: Request) {
   // const d = await request.json();
   // console.log("d", d);
   const { valid, body } = await verifySignature(request);
-  console.table(valid, body);
+  console.log("valid", valid);
   if (!valid) {
     return json({ error: "Invalid request" }, { status: 401 });
   }
