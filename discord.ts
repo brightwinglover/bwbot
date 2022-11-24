@@ -13,6 +13,7 @@ export async function discord(request: Request): Promise<Response> {
   if (!assertRequestCompliant(request, data)) {
     return json({ error: "Invalid request." }, { status: 401 });
   }
+  console.log(data.type);
 
   // Discord ping
   if (data.type === 1) return json({ type: 1 });
