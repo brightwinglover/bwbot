@@ -1,37 +1,27 @@
-import {
-  json,
-  serve,
-  validateRequest,
-} from "https://deno.land/x/sift@0.6.0/mod.ts";
+import { json, validateRequest } from "https://deno.land/x/sift@0.6.0/mod.ts";
 import nacl from "https://cdn.skypack.dev/tweetnacl@v1.0.3?dts";
 import { Buffer } from "https://deno.land/std@0.110.0/node/buffer.ts";
 
 export async function discord(request: Request) {
   // Grab data from request
   const body = await request.json();
-  const { error } = await validateRequest(request, {
-    POST: {
-      headers: ["X-Signature-Ed25519", "X-Signature-Timestamp"],
-    },
-  });
-  const valid = await verifySignature(request, body);
-  // console.log("body", body);
-  if (error || !valid) {
+  // Assert that the request matches Discord's requirements
+  if (!await assertRequestCompliant(request, body)) {
     return json({ error: "Invalid request." }, { status: 401 });
   }
+  // Grab data from request
   const { type = 0, data } = body;
-  // console.log("data", data);
-  // console.log("type", type);
   // Ping
   if (type === 1) return json({ type: 1 });
 
   // Slash commands
   if (type === 2) {
     // Determine which command by name
-    // const { value } = data.options.find((option) => option.name === "name");
     switch (data.name) {
       case "hello":
+        // Says hello in chat
         return json({ type: 4, data: { content: "Hello!" } });
+        // Dispenses one cutie
       case "cutie": {
         return json({ type: 4, data: { content: getCutie() } });
       }
@@ -53,13 +43,22 @@ function verifySignature(
     new TextEncoder().encode(timestamp + JSON.stringify(data)),
     Buffer.from(signature, "hex"),
     Buffer.from(PUBLIC_KEY, "hex"),
-    // hexToUint8Array(PUBLIC_KEY),
   );
   return valid;
 }
 
-function hexToUint8Array(hex: string) {
-  return new Uint8Array(hex.match(/.{1,2}/g)!.map((val) => parseInt(val, 16)));
+async function assertRequestCompliant(
+  request: Request,
+  body: JSON,
+): Promise<boolean> {
+  const { error } = await validateRequest(request, {
+    POST: {
+      headers: ["X-Signature-Ed25519", "X-Signature-Timestamp"],
+    },
+  });
+  const valid = await verifySignature(request, body);
+  if (error || !valid) return false;
+  return true;
 }
 
 // TODO: Generate cutie dynamically
