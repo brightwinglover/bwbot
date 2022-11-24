@@ -4,6 +4,7 @@ import {
   validateRequest,
 } from "https://deno.land/x/sift@0.6.0/mod.ts";
 import nacl from "https://cdn.skypack.dev/tweetnacl@v1.0.3?dts";
+import { Buffer } from "https://deno.land/std@0.110.0/node/buffer.ts";
 
 export async function discord(request: Request) {
   // Grab data from request
@@ -14,15 +15,13 @@ export async function discord(request: Request) {
     },
   });
   const valid = await verifySignature(request, body);
-  console.log("body", body);
+  // console.log("body", body);
   if (error || !valid) {
     return json({ error: "Invalid request." }, { status: 401 });
   }
   const { type = 0, data } = body;
-  console.log("data", data);
-  console.log("type", type);
-  // const input = data?.data;
-  // const type = data?.type;
+  // console.log("data", data);
+  // console.log("type", type);
   // Ping
   if (type === 1) return json({ type: 1 });
 
@@ -52,7 +51,7 @@ function verifySignature(
   const timestamp = request.headers.get("X-Signature-Timestamp")!;
   const valid = nacl.sign.detached.verify(
     new TextEncoder().encode(timestamp + JSON.stringify(data)),
-    hexToUint8Array(signature),
+    Buffer.from(signature, "hex"),
     hexToUint8Array(PUBLIC_KEY),
   );
   return valid;
