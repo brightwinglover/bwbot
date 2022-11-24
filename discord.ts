@@ -14,6 +14,9 @@ export async function discord(request: Request) {
     },
   });
   const valid = await verifySignature(request, data);
+  console.log("data", data);
+  console.log("valid", valid);
+  console.log("valid", valid);
   if (error || !valid) {
     return json({ error: "Invalid request." }, { status: 401 });
   }
@@ -21,6 +24,8 @@ export async function discord(request: Request) {
   //   return json({ error: "Invalid request" }, { status: 401 });
   // }
   const { type = 0, input = { data } } = data;
+  console.log("input", input);
+  console.log("type", type);
   // const input = data?.data;
   // const type = data?.type;
   // Ping
