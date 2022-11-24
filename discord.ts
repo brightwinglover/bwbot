@@ -6,25 +6,21 @@ import {
 import nacl from "https://cdn.skypack.dev/tweetnacl@v1.0.3?dts";
 
 export async function discord(request: Request) {
-  // validateRequest() ensures that a request is of POST method and
-  // has the following headers.
+  const d = await request.json();
   const { error } = await validateRequest(request, {
     POST: {
       headers: ["X-Signature-Ed25519", "X-Signature-Timestamp"],
     },
   });
-  if (error) {
+  const valid = await verifySignature(request, d);
+  if (error || !valid) {
     return json({ error: "Invalid request." }, { status: 401 });
   }
-  const d = await request.json();
-  // console.log("d", d);
-  const { valid, body } = await verifySignature(request, d);
-  console.log("valid", valid);
-  if (!valid) {
-    return json({ error: "Invalid request" }, { status: 401 });
-  }
+  // if (!valid) {
+  //   return json({ error: "Invalid request" }, { status: 401 });
+  // }
   const { type = 0, data = { options: [] } } = d;
-  console.log("Body", body);
+  console.log("d", d);
   console.log("Type", type);
   console.log("Data", data);
   // Ping
@@ -48,10 +44,10 @@ export async function discord(request: Request) {
 }
 
 /** Verify whether the request is coming from Discord. */
-async function verifySignature(
+function verifySignature(
   request: Request,
   data: JSON,
-): Promise<{ valid: boolean; body: string }> {
+): boolean {
   const PUBLIC_KEY = Deno.env.get("DISCORD_PUBLIC_KEY")!;
   // Discord sends these headers with every request.
   const signature = request.headers.get("X-Signature-Ed25519")!;
@@ -67,7 +63,7 @@ async function verifySignature(
     hexToUint8Array(signature),
     hexToUint8Array(PUBLIC_KEY),
   );
-  return { valid, body };
+  return valid;
 }
 
 /** Converts a hexadecimal string to Uint8Array. */
