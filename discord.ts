@@ -52,7 +52,8 @@ function verifySignature(
   const valid = nacl.sign.detached.verify(
     new TextEncoder().encode(timestamp + JSON.stringify(data)),
     Buffer.from(signature, "hex"),
-    hexToUint8Array(PUBLIC_KEY),
+    Buffer.from(PUBLIC_KEY, "hex"),
+    // hexToUint8Array(PUBLIC_KEY),
   );
   return valid;
 }
