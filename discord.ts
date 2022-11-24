@@ -55,7 +55,7 @@ function verifySignature(
   // Discord sends these headers with every request.
   const signature = request.headers.get("X-Signature-Ed25519")!;
   const timestamp = request.headers.get("X-Signature-Timestamp")!;
-  console.log("before valid");
+  console.log(PUBLIC_KEY, signature, timestamp);
   const valid = nacl.sign.detached.verify(
     new TextEncoder().encode(timestamp + body),
     hexToUint8Array(signature),
