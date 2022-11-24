@@ -20,9 +20,10 @@ export async function discord(request: Request) {
   if (!valid) {
     return json({ error: "Invalid request" }, { status: 401 });
   }
-  console.log(body);
   const { type = 0, data = { options: [] } } = JSON.parse(body);
-  console.log(type, data);
+  console.log("Body", body);
+  console.log("Type", type);
+  console.log("Data", data);
   // Ping
   if (type === 1) return json({ type: 1 });
 
@@ -30,7 +31,7 @@ export async function discord(request: Request) {
   if (type === 2) {
     const { value } = data.options.find((option) => option.name === "name");
     // switch (data.data.name) {
-    switch (data.data.name) {
+    switch (data.name) {
       case "hello":
         return json({ type: 4, data: { content: "Hello!" } });
       case "cutie": {
