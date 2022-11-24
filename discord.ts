@@ -57,8 +57,10 @@ function verifySignature(
   console.log("before valid");
   const valid = nacl.sign.detached.verify(
     new TextEncoder().encode(timestamp + body),
-    Buffer.from(signature, "hex"),
-    Buffer.from(PUBLIC_KEY, "hex"),
+    hexToUint8Array(signature),
+    hexToUint8Array(PUBLIC_KEY),
+    // Buffer.from(signature, "hex"),
+    // Buffer.from(PUBLIC_KEY, "hex"),
   );
   console.log(valid);
   return valid;
