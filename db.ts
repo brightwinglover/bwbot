@@ -20,6 +20,25 @@ interface JobSchema {
   Hour: number;
 }
 
+interface MileageSchema {
+  // Native fields
+  _id: ObjectId;
+  Miles: number;
+  Fuel: number;
+  Date: Date;
+  // Derived fields
+  Economy: number;
+  Temperature: number;
+}
+
+interface WeatherSchema {
+  // Native fields
+  _id: ObjectId;
+  Temperature: number;
+  Date: Date;
+  // ? Consider: Weather conditions
+}
+
 const client: MongoClient = new MongoClient();
 // Connection string - Stored as environment variable for security
 const uri = Deno.env.get("MONGODB_URI_SHA");
@@ -30,4 +49,10 @@ export const birthdays = client.database("Clussy").collection<BirthdaySchema>(
 );
 export const jobs = client.database("Clussy").collection<JobSchema>(
   "Jobs",
+);
+export const mileages = client.database("Clussy").collection<MileageSchema>(
+  "Mileages",
+);
+export const weather = client.database("Clussy").collection<WeatherSchema>(
+  "Weather",
 );

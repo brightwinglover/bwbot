@@ -15,7 +15,7 @@ export async function sendTextMessage(
   message: string,
   recipient: string,
 ): Promise<JSON> {
-  // return new Promise(() => JSON.stringify({ "A": 1 }));
+  // return new Promise(() => JSON.stringify({}));
   // Build payload
   const body = new URLSearchParams({
     To: recipient,
