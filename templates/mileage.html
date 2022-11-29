@@ -25,38 +25,49 @@
     }
     body,
     #chartDiv,
-    #tableDiv {
+    #tableDiv,
+    #titleDiv {
       display: flex;
       justify-content: center;
       flex-direction: column;
       margin: auto !important;
     }
+    #chartDiv,
+    #tableDiv {
+      border: black solid 1px;
+    }
+    .container {
+      padding: 16px;
+      background-color: white !important;
+    }
   </style>
-  <body style="">
-    <!-- <div id="tableDiv"> -->
-    <div id="tableDiv" style="width: 80vw !important">
+  <body>
+    <div id="titleDiv" style="width: 80vw !important">
       <h1>Mileage Tracker</h1>
-      <table
-        id="mileage"
-        class="table table-striped table-bordered"
-        cellspacing="0"
-      >
-        <thead>
-          <tr>
-            <th class="th-sm">Miles</th>
-            <th class="th-sm">Fuel</th>
-            <th class="th-sm">Economy</th>
-            <th class="th-sm">Date</th>
-            <th class="th-sm">Temperature</th>
-          </tr>
-        </thead>
-      </table>
+    </div>
+    <div id="tableDiv" style="width: 80vw !important">
+      <div class="container">
+        <table
+          id="mileage"
+          class="table table-striped table-bordered"
+          cellspacing="0"
+        >
+          <thead>
+            <tr>
+              <th class="th-sm">Miles</th>
+              <th class="th-sm">Fuel</th>
+              <th class="th-sm">Economy</th>
+              <th class="th-sm">Date</th>
+              <th class="th-sm">Temperature</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
     </div>
     <br />
 
     <div id="chartDiv" style="width: 80vw !important">
-      <!-- </div>;max-height: 80vw !important;"> -->
-      <canvas id="chart"></canvas>
+      <canvas id="chart" class="container"></canvas>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
@@ -108,8 +119,12 @@
         console.log(data);
         console.log(data.data);
         console.log(data["data"]);
-        economies = data.data.map((x) => x.Economy);
+        // X Axis
         dates = data.data.map((x) => moment(x.Date).format("l"));
+        // Y Axis
+        temperatures = data.data.map((x) => x.Temperature);
+
+        economies = data.data.map((x) => x.Economy);
         const ctx = document.getElementById("chart");
         new Chart(ctx, {
           type: "line",
@@ -119,6 +134,11 @@
               {
                 label: "Economy",
                 data: economies,
+                borderWidth: 1,
+              },
+              {
+                label: "Temperature",
+                data: temperatures,
                 borderWidth: 1,
               },
             ],
