@@ -1,5 +1,6 @@
 import { birthdays, jobs } from "./db.ts";
 import { sendTextMessage } from "./SMS.ts";
+import { json } from "https://deno.land/x/sift@0.6.0/mod.ts";
 
 // SMS reminders for birthdays and other daily occurences
 // Birthdays and jobs are pulled from an external database (MongoDB)
@@ -25,4 +26,22 @@ export async function runTasks(): Promise<void> {
   for (const job of jobsArray) {
     await sendTextMessage(job.Message, job.Recipient);
   }
+}
+
+export async function tasks(request: Request) {
+  // Enforce POST requests
+  if (request.method !== "POST") {
+    return json({ result: "Wrong request method. 🦕🚫" }, { status: 405 });
+  }
+  const data = await request.json();
+  // Check if tasks key exists in environment variables
+  const key = Deno.env.get("TASKS_KEY");
+  if (!key) return json("No key loaded. 🗝️🦕", { status: 401 });
+  // Validate input key
+  if (data.key !== key) {
+    return json({ result: "Wrong tasks key. 🦕🚫" }, { status: 401 });
+  }
+  // Case: success
+  runTasks();
+  return json("Running hourly tasks! 💪🦕");
 }
