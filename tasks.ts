@@ -18,14 +18,17 @@ export async function runTasks(): Promise<void> {
   }).toArray();
   for (const bday of birthdaysArray) {
     const message = `Today is ${bday.Holder}'s birthday!`;
+    console.log(message);
     await sendTextMessage(message, bday.Recipient);
   }
 
   // Send text at the requested hour
   const jobsArray = await jobs.find({ "Hour": now.getHours() }).toArray();
   for (const job of jobsArray) {
+    console.log(job.Message);
     await sendTextMessage(job.Message, job.Recipient);
   }
+  console.log("Done with jobs.");
 }
 
 export async function tasks(request: Request) {
