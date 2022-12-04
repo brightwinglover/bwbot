@@ -7,7 +7,7 @@ import { json } from "https://deno.land/x/sift@0.6.0/mod.ts";
 export async function runTasks(): Promise<void> {
   const now = new Date();
   // Convert UTC to EST
-  now.setHours(now.getHours() - 5);
+  now.setHours((now.getHours() - 5) % 24);
   const birthdaysArray = await birthdays.find({
     $and: [
       // Poll today's birthdays (month and day)
