@@ -6,6 +6,8 @@ import { json } from "https://deno.land/x/sift@0.6.0/mod.ts";
 // Birthdays and jobs are pulled from an external database (MongoDB)
 export async function runTasks(): Promise<void> {
   const now = new Date();
+  console.log(now);
+  console.log(await jobs.find({ "Hour": now.getHours() }).toArray());
 
   const birthdaysArray = await birthdays.find({
     $and: [
