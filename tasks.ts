@@ -6,6 +6,8 @@ import { json } from "https://deno.land/x/sift@0.6.0/mod.ts";
 // Birthdays and jobs are pulled from an external database (MongoDB)
 export async function runTasks(): Promise<void> {
   const now = new Date();
+  // Convert UTC to EST
+  now.setHours(now.getHours() - 5);
   const birthdaysArray = await birthdays.find({
     $and: [
       // Poll today's birthdays (month and day)
@@ -31,28 +33,19 @@ export async function runTasks(): Promise<void> {
 }
 
 export async function tasks(request: Request) {
-  const now = new Date();
-  const nowTable = {
-    now,
-    hours: now.getHours(),
-    date: now.getDate(),
-    month: now.getMonth() + 1,
-  };
-  console.table(nowTable);
-  console.log(await jobs.find({ "Hour": now.getHours() }).toArray());
   // Enforce POST requests
-  // if (request.method !== "POST") {
-  //   return json({ result: "Wrong request method. 🦕🚫" }, { status: 405 });
-  // }
-  // const data = await request.json();
-  // // Check if tasks key exists in environment variables
-  // const key = Deno.env.get("TASKS_KEY");
-  // if (!key) return json("No key loaded. 🗝️🦕", { status: 401 });
-  // // Validate input key
-  // if (data.key !== key) {
-  //   return json({ result: "Wrong tasks key. 🦕🚫" }, { status: 401 });
-  // }
-  // // Case: success
+  if (request.method !== "POST") {
+    return json({ result: "Wrong request method. 🦕🚫" }, { status: 405 });
+  }
+  const data = await request.json();
+  // Check if tasks key exists in environment variables
+  const key = Deno.env.get("TASKS_KEY");
+  if (!key) return json("No key loaded. 🗝️🦕", { status: 401 });
+  // Validate input key
+  if (data.key !== key) {
+    return json({ result: "Wrong tasks key. 🦕🚫" }, { status: 401 });
+  }
+  // Case: success
   runTasks();
   return json("Running hourly tasks! 💪🦕");
 }
