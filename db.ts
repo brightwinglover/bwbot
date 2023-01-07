@@ -17,6 +17,7 @@ interface JobSchema {
   Method: string;
   Recipient: string;
   Message: string;
+  Weekday: number;
   Hour: number;
 }
 
