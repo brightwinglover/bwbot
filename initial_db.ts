@@ -38,7 +38,9 @@ async function newJob(Message: string, Weekday: number, Hour: number) {
   });
 }
 
-// ? Consider sophisticating to every half hour => 5:30 AM
+await jobs.deleteMany({});
+
+// ? Consider: Sophisticate to every half hour => 5:30 AM
 // Insert Iron texts @ 5:00 AM
 [0, 1, 3].forEach(async (weekday) =>
   await newJob("Take your iron! 💊", weekday, 5)
@@ -49,8 +51,13 @@ async function newJob(Message: string, Weekday: number, Hour: number) {
 );
 
 // Insert Medicine texts @ 7:00 AM
-[0, 1, 3, 5, 6].forEach(async (weekday) =>
+[0, 1, 3].forEach(async (weekday) =>
   await newJob("Take your medicine! 💊", weekday, 7)
+);
+
+// Insert Medicine texts @ 8:00 AM on weekends
+[5, 6].forEach(async (weekday) =>
+  await newJob("Take your medicine! 💊", weekday, 8)
 );
 
 // Insert Medicine & Tea Time texts @ 6:00 PM
