@@ -7,6 +7,13 @@ import { miles } from "./miles.ts";
 serve({
   // Base URL
   "/": () => new Response("Hello from Deno! 🎉🦕"),
+  // Time of day - Debug
+  "/time": () => {
+    const now = new Date();
+    // Convert UTC to EST
+    now.setHours((now.getHours() - 5) % 24);
+    return new Response(`Deno Time! 🕛🦕\n${now.getHours()}`);
+  },
   // Hourly chores - SMS reminders
   "/tasks": tasks,
   // Discord bot API
