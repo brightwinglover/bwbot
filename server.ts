@@ -12,7 +12,9 @@ serve({
     const now = new Date();
     // Convert UTC to EST
     now.setHours((now.getHours() - 5) % 24);
-    return new Response(`Deno Time! 🕛🦕\n${now.getHours()}`);
+    return new Response(
+      `Deno Time! 🕛🦕\nHour: ${now.getHours()}\nDay: ${now.getDay()}`,
+    );
   },
   // Hourly chores - SMS reminders
   "/tasks": tasks,
