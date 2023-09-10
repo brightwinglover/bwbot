@@ -34,21 +34,23 @@ async function newJob(Message: string, Weekday: number, Hour: number) {
     Recipient,
     Message,
     Weekday,
+    // Time indexes from 0 for 12
     // Subtract an hour for daylight savings
-    Hour: Hour - 1,
+    Hour: Hour + 1,
   });
 }
 
 await jobs.deleteMany({});
 
 // ? Consider: Sophisticate to every half hour => 5:30 AM
+// ? Note: Day 0 is Sunday, not Monday
 // Insert Medicine texts @ 5:00 AM on weekdays
-[0, 1, 2, 3, 4].forEach(async (weekday) =>
+[1, 2, 3, 4, 5].forEach(async (weekday) =>
   await newJob("Take your medicine! 💊", weekday, 5)
 );
 
 // Insert Medicine texts @ 8:00 AM on weekends
-[5, 6].forEach(async (weekday) =>
+[0, 6].forEach(async (weekday) =>
   await newJob("Take your medicine! 💊", weekday, 8)
 );
 

@@ -1,3 +1,4 @@
+import { time } from "https://deno.land/x/time.ts@v2.0.1/mod.ts";
 import { birthdays, jobs } from "./db.ts";
 import { sendTextMessage } from "./SMS.ts";
 import { json } from "https://deno.land/x/sift@0.6.0/mod.ts";
@@ -5,9 +6,12 @@ import { json } from "https://deno.land/x/sift@0.6.0/mod.ts";
 // SMS reminders for birthdays and other daily occurences
 // Birthdays and jobs are pulled from an external database (MongoDB)
 export async function runTasks(): Promise<void> {
-  const now = new Date();
-  // Convert UTC to EST
-  now.setHours((now.getHours() - 5) % 24);
+  const now = time().tz("America/New_York").t;
+  // Old version: Grab UTC and offset
+  // const now = new Date();
+  // // Convert UTC to EST
+  // now.setHours((now.getHours() - 5) % 24);
+
   const birthdaysArray = await birthdays.find({
     $and: [
       // Poll today's birthdays (month and day)
